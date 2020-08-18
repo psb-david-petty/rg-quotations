@@ -1,7 +1,7 @@
 /*
  */
 function format(size, spacing) {
-	/* Set line-height to spacing ratio. */
+	/* Set body line-height to spacing ratio. */
 	if (document.querySelector('body'))
 		document.querySelector('body').style.lineHeight = `${spacing}`;
 	/* TODO: finish comment
@@ -52,6 +52,10 @@ function format(size, spacing) {
 			node.style.backgroundColor = color;
 		}
 	}
+	/* Set body display to make visible. */
+	if (document.querySelector('body'))
+		document.querySelector('body').style.display = `block`;
+
 	return false;
 }
 
