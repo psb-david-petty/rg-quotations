@@ -1,0 +1,28 @@
+/*
+ * rg-quotations.css
+ */
+* { margin: 0 1%; }
+body { font-family: 'Rock Salt', cursive; }
+article {
+  display: flex; flex-direction: column; justify-content: space-evenly;
+  width: 10in; height: 8in; border: thin solid black;
+}
+.quote { text-align: center; }
+.author {
+  width: 50%; font-size: initial; 
+  margin-left: auto; text-align: right; padding-right: 2%;
+}
+a { color: inherit; }
+pre, code {
+  font-family: 'Inconsolata', monospace; 
+  font-size: 24px; /* must match size in format(size, spacing) */
+}
+/* p { border: thin solid black; } */
+
+@media print {
+  @page { margin: 0.25in 0.5in; }
+  body { width: 10in; height: 8in; }
+  article { page-break-before:always; }
+}
+
+ 
