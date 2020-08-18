@@ -2,7 +2,7 @@
  * rg-quotations.css
  */
 * { margin: 0 1%; }
-body { display: none; font-family: 'Rock Salt', cursive; }
+body { visibility: hidden; font-family: 'Rock Salt', cursive; }
 article {
   display: flex; flex-direction: column; justify-content: space-evenly;
   width: 10in; height: 8in; border: thin solid black;

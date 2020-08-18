@@ -46,7 +46,7 @@ function format(size, spacing) {
 			child.style.fontSize = fontSize;
 
 			/* Set random colors from list. */
-			const colors = [ '#0cc', '#63c', '#f90', '#c33', '#06c', ];
+			const colors = [ '#0cc', '#63c', '#f90', '#c33', '#06c', '#393', ];
 			let color = colors[Math.floor(Math.random() * colors.length)];
 			node.style.color = 'white';
 			node.style.backgroundColor = color;
@@ -54,7 +54,7 @@ function format(size, spacing) {
 	}
 	/* Set body display to make visible. */
 	if (document.querySelector('body'))
-		document.querySelector('body').style.display = `block`;
+		document.querySelector('body').style.visibility = `visible`;;
 
 	return false;
 }
