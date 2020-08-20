@@ -10,16 +10,26 @@ const color_map = {
     cyan: '#0cc', 
 };
 
-/* Format takes ...
+/* Format takes default font-size and line-height spacing and adjusts the
+ * font-size for the quotation to (mostly) fit in each article.
+ *
+ * A sample <article> is:
+ *    <article>
+ *      <p class="quote">There’s always one more bug.</p>
+ *      <p class="author">- Lubarshky’s Law of Cybernetic Entomology</p>
+ *    </article>
  */
 function format(size, spacing) {
     /* Set body line-height to spacing ratio. */
     if (document.querySelector('body'))
         document.querySelector('body').style.lineHeight = `${spacing}`;
-
-    /* TODO: finish comment
+                                                /* */
+    /* Examine each article to look for author and quote. Find number (zero
+     * or more) lines in author (to adjust size of available height). Measure
+     * area of text at size and scale quote font-size to fill available area.
+     * Randomly shuffle available colors and set article background-color.
      */
-    let colors = Object.values(color_map);
+    let colors = Object.values(color_map);      /* initialize colors */
     let article = 'article', quote = '.quote', author = '.author', child, log;
     for (const [index, node] of document.querySelectorAll(article).entries()) {
         /* Rearrange color array after all are used. */
@@ -40,33 +50,42 @@ function format(size, spacing) {
             }
             else
                 child.style.display = 'none';
-            log = `AUTHOR: "${child.innerHTML}" lines = ${count}`;
+            log = `AUTHOR: "${child.innerHTML}" lines = ${count}; `;
         }
 
         /* Find number of characters of quote and use it to set font-size. */
         child = node.querySelector(quote);
         if (child) {
             let length = child.innerHTML.length;
-            log = `QUOTE: "${child.innerHTML}" length = ${length} ` + log;
-            console.log(log);
+            log = `QUOTE: "${child.innerHTML}" length = ${length}; ` + log;
 
+            /* There is a lot going on here...
+             * - adjust node width & height by 3/4 - actual DPI v. canvas DPI
+             * - use text width & height @ size to calculate ratio
+             * - include a fudge factor, because areas of wrapped text differ
+             * - set font-size to scaled value, clipped to a maximum
+             */
             let width = node.offsetWidth * 72 / 96;
             let height = node.offsetHeight * 72 / 96 - count * size * spacing;
             let area = width * height;
+            /* TODO: assumes "Rock Salt" font */
             let rect = get_text_size(child.innerHTML, `${size}px "Rock Salt"`);
             let ratio = Math.sqrt(area / rect.width / rect.height / spacing);
             const fudge = 1.05;
             /* TODO: 108px is an arbitrary max */
             let fontSize = 
                 `${Math.min(108, Math.round(size * ratio * fudge))}px`;
-            console.log(`WIDTH: ${rect.width}; HEIGHT: ${rect.height}  `
-                + `RATIO: ${ratio} "${fontSize}"`);
+            log += `WIDTH: ${rect.width}; HEIGHT: ${rect.height}  `
+                + `RATIO: ${ratio} "${fontSize}"; `;
             child.style.fontSize = fontSize;
 
             /* Set random colors from shuffled list. */
             let color = colors[index % colors.length];
             node.style.color = 'white';
             node.style.backgroundColor = color;
+            log += `COLOR: ${color}; `;
+
+            console.log(log);
         }
     }
     /* Set specific colors with colorize. */
