@@ -11,83 +11,90 @@ const color_map = {
 };
 
 /* Format takes default font-size and line-height spacing and adjusts the
- * font-size for the quotation to (mostly) fit in each article.
+ * font-size for the quotation to (mostly) fit in each section.
  *
- * A sample <article> is:
- *    <article>
- *      <p class="quote">There’s always one more bug.</p>
- *      <p class="author">- Lubarshky’s Law of Cybernetic Entomology</p>
- *    </article>
+ * A sample <section> is:
+ *    <section>
+ *      <article>
+ *        <p class="quote">There’s always one more bug.</p>
+ *      </article>
+ *      <article>
+ *        <p class="author">- Lubarshky’s Law of Cybernetic Entomology</p>
+ *      </article>
+ *    </section>
  */
 function format(size, spacing) {
     /* Set body line-height to spacing ratio. */
     if (document.querySelector('body'))
         document.querySelector('body').style.lineHeight = `${spacing}`;
                                                 /* */
-    /* Examine each article to look for author and quote. Find number (zero
-     * or more) lines in author (to adjust size of available height). Measure
-     * area of text at size and scale quote font-size to fill available area.
+    /* Examine each section to look for author and quote. Find number (zero
+     * or more) author lines (to adjust size of available height). Find
+     * areas of quote lines of text at size, sum them to calculate scale, 
+     * and adjust font-size of quote lines to fill available area.
      * Randomly shuffle available colors and set article background-color.
+     * colorize elements based on color classes.
+     *
+     * NOTE: used child.innerHTML.split(/\r?\n/); to split multiple lines
      */
     let colors = Object.values(color_map);      /* initialize colors */
-    let article = 'article', quote = '.quote', author = '.author', child, log;
-    for (const [index, node] of document.querySelectorAll(article).entries()) {
-        /* Rearrange color array after all are used. */
+    let section = 'section', quote = '.quote', author = '.author';
+    for (const [index, node] of document.querySelectorAll(section).entries()) {
+        /* Rearrange color array after all are used once. */
         if (index % colors.length == 0) {
             colors = shuffle(colors);
         }
 
-        /* Find number of lines of author. */
-        let count = 0;
-        child = node.querySelector(author);
-        if (child) {
-            let lines = child.innerHTML.split(/\r?\n/);
-            count = child.innerHTML ? lines.length : 0;
-            /* Set font-size and break lines if any, else display: none. */
-            if (count) {
-                child.innerHTML = lines.join('<br>');
-                child.style.fontSize = `${size}px`;
-            }
-            else
-                child.style.display = 'none';
-            log = `AUTHOR: "${child.innerHTML}" lines = ${count}; `;
+        /* Find number of author lines. */
+        let lines = Array(), count = 0, log = ''
+        for (const child of node.querySelectorAll(author)) {
+            count += 1;                         /* increment child count */
+            child.style.fontSize = `${size}px`; /* set child font-size */
+            lines.push(child.innerHTML);
         }
+        log += `AUTHOR: "${lines.join('+')}"(${count}); `;
+        lines = Array();
 
-        /* Find number of characters of quote and use it to set font-size. */
-        child = node.querySelector(quote);
-        if (child) {
-            let length = child.innerHTML.length;
-            log = `QUOTE: "${child.innerHTML}" length = ${length}; ` + log;
-
-            /* There is a lot going on here...
-             * - adjust node width & height by 3/4 - actual DPI v. canvas DPI
-             * - use text width & height @ size to calculate ratio
-             * - include a fudge factor, because areas of wrapped text differ
-             * - set font-size to scaled value, clipped to a maximum
-             */
-            let width = node.offsetWidth * 72 / 96;
-            let height = node.offsetHeight * 72 / 96 - count * size * spacing;
-            let area = width * height;
+        /* Find quote rectangles and acumulate area @ size. */
+        let rects = Array(), area = 0;
+        for (const child of node.querySelectorAll(quote)) {
             /* TODO: assumes "Rock Salt" font */
-            let rect = get_text_size(child.innerHTML, `${size}px "Rock Salt"`);
-            let ratio = Math.sqrt(area / rect.width / rect.height / spacing);
-            const fudge = 1.05;
-            /* TODO: 108px is an arbitrary max */
-            let fontSize = 
-                `${Math.min(108, Math.round(size * ratio * fudge))}px`;
-            log += `WIDTH: ${rect.width}; HEIGHT: ${rect.height}  `
-                + `RATIO: ${ratio} "${fontSize}"; `;
-            child.style.fontSize = fontSize;
-
-            /* Set random colors from shuffled list. */
-            let color = colors[index % colors.length];
-            node.style.color = 'white';
-            node.style.backgroundColor = color;
-            log += `COLOR: ${color}; `;
-
-            console.log(log);
+            let rect = get_text_size(child.innerHTML,`${size}px "Rock Salt"`);
+            area += rect.width * rect.height * spacing;
+            lines.push(`"${child.innerHTML}"(${child.innerHTML.length})`
+                + `[${Math.round(rect.width)}x${rect.height}]`);
         }
+        log = `QUOTE: ${lines.join('+')}; ` + log;
+
+        /* There is a lot going on here...
+         * - adjust node width & height by 3/4 - actual DPI v. canvas DPI
+         * - use text area to calculate ratio
+         * - include a fudge factor, because areas of wrapped text differ
+         * - scale fontSize, clipped to a maximum
+         */
+        let width = node.offsetWidth * 72 / 96;
+        let height = node.offsetHeight * 72 / 96 - count * size * spacing;
+        let ratio = Math.sqrt(width * height / area);
+        const fudge = 1.05;
+        /* TODO: 120px is an arbitrary max */
+        let fontSize = 
+            `${Math.min(120, Math.round(size * ratio * fudge))}px`;
+        log += `RATIO: ${ratio.toFixed(3)} "${fontSize}"; `;
+
+        /* Set font-size of quotes to scaled value clipped to a maximum. */
+        for (const child of node.querySelectorAll(quote)) {
+            child.style.fontSize = fontSize;
+        }
+
+        /* Set random colors from shuffled list. */
+        let color = colors[index % colors.length];
+        node.style.color = 'white';
+        node.style.backgroundColor = color;
+        log += `COLOR: ${color}; `;
+
+        console.log(log);
     }
+
     /* Set specific colors with colorize. */
     colorize(color_map);
 
@@ -110,7 +117,9 @@ function colorize(colors) {
     return false;
 }
 
-// https://stackoverflow.com/questions/31305071/measuring-text-width-height-without-rendering
+/* https://stackoverflow.com/questions/31305071/measuring-text-width-height-without-rendering
+ * Return rectangle object w/ width and height of txt rendered in font.
+ */
 function get_text_size(txt, font) {
     let element = document.createElement('canvas');
     let context = element.getContext('2d');

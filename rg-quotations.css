@@ -3,7 +3,7 @@
  */
 * { margin: 0 1%; }
 body { visibility: hidden; font-family: 'Rock Salt', cursive; }
-article {
+section {
   display: flex; flex-direction: column; justify-content: space-evenly;
   width: 10in; height: 8in; border: thin solid black;
 }
@@ -14,16 +14,23 @@ article {
 }
 a { color: inherit; text-decoration: none; }
 a:hover { text-decoration: underline; }
-pre, code {
+pre, code, .pre {
   font-family: 'Inconsolata', monospace; 
-  font-size: 24px; /* must match size in format(size, spacing) */
+  text-align: left;
+  white-space: pre;
+}
+footer {
+  text-align: center; 
+  font-family: 'Inconsolata', monospace; 
+  font-size: x-small;
 }
 /* p { border: thin solid black; } */
 
 @media print {
   @page { margin: 0.25in 0.5in; }
   body { width: 10in; height: 8in; }
-  article { page-break-before:always; }
+  section { page-break-before:always; }
+  footer { visibility: hidden; }
 }
 
  
