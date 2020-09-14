@@ -32,10 +32,10 @@ function format(size, spacing) {
      * or more) author lines (to adjust size of available height). Find
      * areas of quote lines of text at size, sum them to calculate scale, 
      * and adjust font-size of quote lines to fill available area.
-     * Randomly shuffle available colors and set article background-color.
-     * colorize elements based on color classes.
+     * Randomly shuffle available colors and set section background-color.
+     * colorize elements based on color class attribute (if any).
      *
-     * NOTE: used child.innerHTML.split(/\r?\n/); to split multiple lines
+     * NOTE: use child.innerHTML.split(/\r?\n/); to split multiple lines
      */
     let colors = Object.values(color_map);      /* initialize colors */
     let section = 'section', quote = '.quote', author = '.author';
