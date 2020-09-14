@@ -29,7 +29,7 @@ footer {
 @media print {
   @page { margin: 0.25in 0.5in; }
   body { width: 10in; height: 8in; }
-  section { page-break-before:always; }
+  section { page-break-before:always; margin: 0.25in 0.25in /* a hack */ }
   footer { visibility: hidden; }
 }
 
