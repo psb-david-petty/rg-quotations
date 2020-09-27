@@ -38,7 +38,7 @@ function format(size, spacing) {
      * NOTE: use child.innerHTML.split(/\r?\n/); to split multiple lines
      */
     let colors = Object.values(color_map);      /* initialize colors */
-    let section = 'section', quote = '.quote', author = '.author';
+    const section = 'section', quote = '.quote', author = '.author';
     for (const [index, node] of document.querySelectorAll(section).entries()) {
         /* Rearrange color array after all are used once. */
         if (index % colors.length == 0) {
