@@ -1,5 +1,5 @@
 # rg-quotations
-Quotations in computing based on a file by Ria Galanos. Each quotation is designed to be printed as a classroom poster. These quotations have been augmented by ones from [HackerSays](http://hackersays.com/), [AZQuotes](https://azquotes.com/quotes/topics/computer-science.html), [adafruit quotations](https://adafruit.com/quotes) (one of which is shipped in every box!), other [Googleable](https://lmgtfy.app/?q=computer+science+quotations) quotation sites, and my [teaching](http://j.mp/psb_david_petty).
+Quotations in computing based on a file by [Ria Galanos](https://github.com/riagalanos). Each quotation is designed to be printed as a classroom poster. These quotations have been augmented by ones from [HackerSays](http://hackersays.com/), [AZQuotes](https://azquotes.com/quotes/topics/computer-science.html), [adafruit quotations](https://adafruit.com/quotes) (one of which is shipped in every box!), other [Googleable](https://lmgtfy.app/?q=computer+science+quotations) quotation sites, and my [teaching](http://j.mp/psb_david_petty).
 
 ## `font-size` property
 
