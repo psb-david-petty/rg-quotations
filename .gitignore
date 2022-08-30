@@ -38,6 +38,7 @@
 ###################
 .idea/
 .settings/
+.vscode
 bin/
 
 # User directories #
